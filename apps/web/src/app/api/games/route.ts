@@ -21,7 +21,7 @@ export async function GET() {
     where: { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }, { status: "WAITING", blackPlayerId: null }] },
     orderBy: { updatedAt: "desc" }, take: 30,
     select: {
-      id: true, status: true, timeControl: true, result: true, currentFen: true,
+      id: true, status: true, timeControl: true, result: true, pgn: true, currentFen: true,
       whiteTimeMs: true, blackTimeMs: true, createdAt: true, startedAt: true, endedAt: true,
       whitePlayer: { select: { id: true, playerProfile: { select: { username: true } } } },
       blackPlayer: { select: { id: true, playerProfile: { select: { username: true } } } },
