@@ -11,7 +11,7 @@ export default function HomePage() {
     <main className="shell">
       <nav className="nav">
         <a className="brand" href="#"><span className="brand-mark">C</span> chessora</a>
-        <div className="nav-links"><a href="/play">Play</a><a href="#features">Features</a><a href="#vision">Our vision</a></div>
+        <div className="nav-links"><a href="/multiplayer">Multiplayer</a><a href="/play">Practice</a><a href="#features">Features</a><a href="#vision">Our vision</a></div>
         <div className="nav-actions"><a className="nav-login" href="/login">Sign in</a><a className="nav-cta" href="/register">Join Chessora <ArrowUpRight size={15} /></a></div>
       </nav>
 
@@ -21,7 +21,7 @@ export default function HomePage() {
           <h1>Think beyond<br /><em>the board.</em></h1>
           <p className="hero-text">A sharper place to play, learn, and compete. Built for the love of the game — and the next generation of players.</p>
           <div className="hero-actions">
-            <a className="primary-button" href="/play">Play chess <ArrowUpRight size={17} /></a>
+            <a className="primary-button" href="/multiplayer">Find a game <ArrowUpRight size={17} /></a>
             <a className="text-link" href="#features">Discover the platform</a>
           </div>
           <div className="hero-note"><span className="note-line" /> PLAY · LEARN · MASTER</div>
