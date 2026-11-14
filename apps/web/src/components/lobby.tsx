@@ -17,6 +17,7 @@ const controls = ["1+0", "3+0", "3+2", "5+0", "5+3", "10+0", "15+10"];
 export default function Lobby() {
   const router = useRouter();
   const [games, setGames] = useState<Game[]>([]);
+  const [viewerId, setViewerId] = useState("");
   const [control, setControl] = useState("5+0");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -29,6 +30,7 @@ export default function Lobby() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not load games.");
       setGames(data.games);
+      setViewerId(data.viewerId);
       setError("");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Could not load games."); }
     finally { setLoading(false); }
@@ -69,7 +71,7 @@ export default function Lobby() {
       <div className="lobby-list-head"><div><span className="eyebrow">MATCHMAKING</span><h2>Open games</h2></div><button className="lobby-refresh" onClick={()=>void refresh()}><RefreshCw size={14}/> Refresh</button></div>
       {error && <p className="auth-error" role="alert">{error}</p>}
       {loading ? <p className="lobby-empty">Loading games…</p> : games.filter(game=>game.status==="WAITING" || game.status==="ACTIVE").length===0 ? <div className="lobby-empty"><Swords size={24}/><p>No games yet. Create the first challenge.</p></div> :
-        <div className="lobby-games">{games.filter(game=>game.status==="WAITING" || game.status==="ACTIVE").map(game=><article className="lobby-game" key={game.id}><div className="lobby-game-icon"><Swords size={18}/></div><div className="lobby-game-info"><strong>{game.whitePlayer.playerProfile?.username || "White"} <span>vs</span> {game.blackPlayer?.playerProfile?.username || (game.status==="WAITING" ? "Open seat" : "Black")}</strong><small>{game.timeControl} · {game.status==="WAITING" ? "Waiting for opponent" : "In progress"}</small></div>{game.status==="WAITING" ? <button onClick={()=>joinGame(game.id)} disabled={busy}>Join game</button> : <Link href={`/games/${game.id}`}>Open game</Link>}</article>)}</div>}
+        <div className="lobby-games">{games.filter(game=>game.status==="WAITING" || game.status==="ACTIVE").map(game=><article className="lobby-game" key={game.id}><div className="lobby-game-icon"><Swords size={18}/></div><div className="lobby-game-info"><strong>{game.whitePlayer.playerProfile?.username || "White"} <span>vs</span> {game.blackPlayer?.playerProfile?.username || (game.status==="WAITING" ? "Open seat" : "Black")}</strong><small>{game.timeControl} · {game.status==="WAITING" ? "Waiting for opponent" : "In progress"}</small></div>{game.status==="WAITING" && game.whitePlayer.id!==viewerId ? <button onClick={()=>joinGame(game.id)} disabled={busy}>Join game</button> : <Link href={`/games/${game.id}`}>{game.status==="WAITING"?"Waiting room":"Open game"}</Link>}</article>)}</div>}
       <p className="lobby-footnote">Only authenticated players can create or join games. Please note: live updates currently refresh every five seconds in the lobby and every two seconds in a game.</p>
     </section>
   </main>;
