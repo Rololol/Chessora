@@ -63,7 +63,7 @@ export default function Lobby() {
   }
 
   return <main className="lobby-shell">
-    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/profile">Profile</Link><Link href="/play">Practice board</Link></div></header>
+    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/history">History</Link><Link href="/profile">Profile</Link><Link href="/play">Practice board</Link></div></header>
     <section className="lobby-content">
       <Link className="profile-back" href="/"><ArrowLeft size={15}/> Back home</Link>
       <div className="lobby-heading"><span className="eyebrow">ONLINE ARENA · EARLY ACCESS</span><h1>Find your next<br/><em>opponent.</em></h1><p>Create a challenge or join an open game. Games are currently turn-synchronized by polling.</p></div>
