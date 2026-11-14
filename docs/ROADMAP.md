@@ -11,7 +11,7 @@
 - [x] Basic player profiles (username, bio, country code, initial rating fields)
 - [x] Local interactive chessboard with legal move validation
 - [x] Initial server-authoritative game session, legal move, and clock API (integration testing pending)
-- [x] Basic open-game lobby and polling-based two-player rooms (no WebSockets yet)
+- [x] Guest-accessible open-game lobby and polling-based two-player rooms (no WebSockets yet; guest abuse controls and cleanup pending)
 - [ ] Realtime matchmaking for Bullet, Blitz, and Rapid
 - [x] Resignation, draw offers, and cancellation of waiting games (disconnect recovery and rematch pending)
 - [x] PGN export and basic game history
