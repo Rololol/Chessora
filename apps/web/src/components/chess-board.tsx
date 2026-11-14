@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { Chess, type Square } from "chess.js";
-import { ArrowLeft, RotateCcw, Undo2 } from "lucide-react";
+import { ArrowLeft, RotateCcw, Undo2, Settings } from "lucide-react";
+import { useEffect } from "react";
+import { readSettings, playChessSound, type ChessoraSettings } from "@/lib/settings";
 import Link from "next/link";
 
 const glyph: Record<string, string> = {
@@ -15,6 +17,8 @@ export default function ChessBoard() {
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromotion, setPendingPromotion] = useState<{ from: Square; to: Square } | null>(null);
   const [notice, setNotice] = useState("White to move");
+  const [prefs,setPrefs] = useState<ChessoraSettings | null>(null);
+  useEffect(()=>{const load=()=>setPrefs(readSettings());load();window.addEventListener("chessora-settings",load);return()=>window.removeEventListener("chessora-settings",load)},[]);
 
   const game = useMemo(() => {
     const position = new Chess();
@@ -40,7 +44,8 @@ export default function ChessBoard() {
   function makeMove(from: Square, to: Square, promotion = "q") {
     const next = new Chess(game.fen());
     try {
-      next.move({ from, to, promotion });
+      const moved = next.move({ from, to, promotion });
+      playChessSound(moved.captured ? "capture" : "move");
       setPgn(next.pgn());
       setNotice(statusText(next));
       setSelected(null);
@@ -96,7 +101,7 @@ export default function ChessBoard() {
       <header className="play-nav">
         <Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link>
         <span className="play-kicker">PRACTICE BOARD · LOCAL GAME</span>
-        <div className="play-nav-actions"><Link className="back-link" href="/profile">Player profile</Link><Link className="back-link" href="/"><ArrowLeft size={15} /> Home</Link></div>
+        <div className="play-nav-actions"><Link className="back-link" href="/settings"><Settings size={15}/> Settings</Link><Link className="back-link" href="/"><ArrowLeft size={15} /> Home</Link></div>
       </header>
 
       <section className="play-layout">
@@ -107,8 +112,8 @@ export default function ChessBoard() {
           </div>
 
           <div className="live-board-wrap">
-            <div className="board-coords left-coords">{[8,7,6,5,4,3,2,1].map((rank) => <span key={rank}>{rank}</span>)}</div>
-            <div className="live-board" role="grid" aria-label="Interactive chessboard">
+            {prefs?.coordinates!==false && <div className="board-coords left-coords">{[8,7,6,5,4,3,2,1].map((rank) => <span key={rank}>{rank}</span>)}</div>}
+            <div className={`live-board ${prefs?.pieces==="minimal"?"pieces-minimal":""}`} role="grid" aria-label="Interactive chessboard">
               {game.board().flatMap((rank, row) => rank.map((piece, col) => {
                 const square = `${"abcdefgh"[col]}${8-row}` as Square;
                 const isLight = (row + col) % 2 === 0;
@@ -122,9 +127,9 @@ export default function ChessBoard() {
                     aria-label={`${square}, ${piece ? (piece.color === "w" ? "white" : "black") + " " + piece.type : "empty"}`}
                     key={square}
                     onClick={() => chooseSquare(square)}
-                    className={`live-square ${isLight ? "light" : "dark"} ${isSelected ? "selected" : ""} ${isLast ? "last" : ""}`}
+                    className={`live-square ${prefs?.board==="blue"?"ocean":prefs?.board==="wood"?"wood":prefs?.board==="green"?"forest":isLight?"light":"dark"} ${isSelected ? "selected" : ""} ${isLast ? "last" : ""}`}
                   >
-                    {piece && <span className={piece.color === "w" ? "piece-white" : "piece-black"}>{glyph[piece.color + piece.type]}</span>}
+                    {piece && <span className={piece.color === "w" ? "piece-white" : "piece-black"}>{prefs?.pieces==="minimal" ? piece.type.toUpperCase() : glyph[piece.color + piece.type]}</span>}
                     {isTarget && <span className={piece ? "capture-dot" : "move-dot"} />}
                     {col === 0 && <small className="rank-label">{8-row}</small>}
                     {row === 7 && <small className="file-label">{ "abcdefgh"[col] }</small>}
@@ -132,9 +137,9 @@ export default function ChessBoard() {
                 );
               }))}
             </div>
-            <div className="board-coords right-coords">{[8,7,6,5,4,3,2,1].map((rank) => <span key={rank}>{rank}</span>)}</div>
+            {prefs?.coordinates!==false && <div className="board-coords right-coords">{[8,7,6,5,4,3,2,1].map((rank) => <span key={rank}>{rank}</span>)}</div>}
           </div>
-          <div className="file-coords">{[..."abcdefgh"].map((file) => <span key={file}>{file}</span>)}</div>
+          {prefs?.coordinates!==false && <div className="file-coords">{[..."abcdefgh"].map((file) => <span key={file}>{file}</span>)}</div>}
 
           {pendingPromotion && <div className="promotion-panel"><span>Promote pawn to</span>{(["q","r","b","n"] as const).map((type) => <button key={type} onClick={() => makeMove(pendingPromotion.from, pendingPromotion.to, type)}>{glyph[game.turn() + type]}</button>)}<button className="cancel-promotion" onClick={() => setPendingPromotion(null)}>Cancel</button></div>}
           <div className="board-status"><span className="status-dot" />{notice}</div>
