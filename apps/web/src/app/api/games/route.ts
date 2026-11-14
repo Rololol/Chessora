@@ -27,7 +27,7 @@ export async function GET() {
       blackPlayer: { select: { id: true, playerProfile: { select: { username: true } } } },
     },
   });
-  return NextResponse.json({ games });
+  return NextResponse.json({ games, viewerId: session.user.id });
 }
 
 export async function POST(request: Request) {
