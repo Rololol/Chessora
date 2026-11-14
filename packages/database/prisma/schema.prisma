@@ -18,6 +18,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   playerProfile PlayerProfile?
+  gamesAsWhite  Game[] @relation("WhitePlayer")
+  gamesAsBlack  Game[] @relation("BlackPlayer")
 }
 
 model Session {
@@ -79,4 +81,54 @@ model PlayerProfile {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([username])
+}
+
+enum GameStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+  ABORTED
+}
+
+model Game {
+  id            String      @id @default(cuid())
+  whitePlayerId String
+  blackPlayerId String?
+  status        GameStatus  @default(WAITING)
+  timeControl   String
+  initialFen    String      @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  currentFen    String      @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  pgn           String      @default("")
+  result        String?
+  whiteTimeMs   Int?
+  blackTimeMs   Int?
+  incrementMs   Int         @default(0)
+  startedAt     DateTime?
+  endedAt       DateTime?
+  lastMoveAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  whitePlayer   User        @relation("WhitePlayer", fields: [whitePlayerId], references: [id], onDelete: Restrict)
+  blackPlayer   User?       @relation("BlackPlayer", fields: [blackPlayerId], references: [id], onDelete: SetNull)
+  moves         GameMove[]
+
+  @@index([whitePlayerId, status])
+  @@index([blackPlayerId, status])
+  @@index([status, createdAt])
+}
+
+model GameMove {
+  id        String   @id @default(cuid())
+  gameId    String
+  ply       Int
+  from      String   @db.VarChar(2)
+  to        String   @db.VarChar(2)
+  promotion String?  @db.VarChar(1)
+  san       String
+  fenAfter  String
+  createdAt DateTime @default(now())
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, ply])
+  @@index([gameId, createdAt])
 }
