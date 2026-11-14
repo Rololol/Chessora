@@ -181,3 +181,8 @@ footer .brand{font-size:16px}footer .brand-mark{width:24px;height:24px;font-size
 .room-board.pieces-minimal .room-square>span{font-family:'DM Sans',sans-serif;font-size:clamp(18px,3.4vw,38px);font-weight:700;border-radius:50%;width:72%;height:72%;display:grid;place-items:center;text-shadow:none;-webkit-text-stroke:0}
 .room-board.pieces-minimal .room-square .piece-white{background:#fffdf1;color:#20251e;border:2px solid #20251e}
 .room-board.pieces-minimal .room-square .piece-black{background:#20251e;color:#fffdf1;border:2px solid #fffdf1}
+
+.live-square.ocean{background:#dee8f0}.live-square.ocean:nth-child(odd){background:#6b91b5}.live-square.wood{background:#f0d9b5}.live-square.wood:nth-child(odd){background:#b58863}.live-square.forest{background:#eeeed2}.live-square.forest:nth-child(odd){background:#769656}
+.live-board.pieces-minimal .live-square>span:not(.move-dot):not(.capture-dot){font-family:'DM Sans',sans-serif;font-size:clamp(18px,3.4vw,38px);font-weight:700;border-radius:50%;width:72%;height:72%;display:grid;place-items:center;text-shadow:none;-webkit-text-stroke:0}
+.live-board.pieces-minimal .live-square .piece-white{background:#fffdf1;color:#20251e;border:2px solid #20251e}
+.live-board.pieces-minimal .live-square .piece-black{background:#20251e;color:#fffdf1;border:2px solid #fffdf1}
