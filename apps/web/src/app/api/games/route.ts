@@ -18,7 +18,7 @@ export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const games = await prisma.game.findMany({
-    where: { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }] },
+    where: { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }, { status: "WAITING", blackPlayerId: null }] },
     orderBy: { updatedAt: "desc" }, take: 30,
     select: {
       id: true, status: true, timeControl: true, result: true, currentFen: true,
