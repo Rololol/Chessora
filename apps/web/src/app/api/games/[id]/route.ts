@@ -19,5 +19,5 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   if (game.whitePlayerId !== viewer.id && game.blackPlayerId !== viewer.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  return NextResponse.json({ game: { ...game, viewerId: viewer.id } });
+  return NextResponse.json({ game: { ...game, viewerId: viewer.id, viewerIsGuest: viewer.isGuest } });
 }
