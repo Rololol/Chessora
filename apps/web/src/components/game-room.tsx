@@ -92,7 +92,7 @@ export default function GameRoom({ id }: { id: string }) {
   const status=finished?(game.status==="ABORTED"?"Game cancelled":game.result==="1-0"?"White wins":game.result==="0-1"?"Black wins":"Draw"):game.status==="WAITING"?"Waiting for an opponent":myTurn?"Your move": "Opponent's turn";
 
   return <main className="room-shell">
-    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link><Link href="/history">History</Link><Link href="/profile">Profile</Link></div></header>
+    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link><Link href="/history">History</Link><a href={"/api/games/"+id+"/pgn"}>PGN</a><Link href="/profile">Profile</Link></div></header>
     <section className="room-content"><Link className="profile-back" href="/multiplayer"><ArrowLeft size={15}/> Back to lobby</Link>
       <div className="room-heading"><div><span className="eyebrow">LIVE GAME · {game.timeControl}</span><h1>Play the position.</h1></div><span className="room-status">{status}</span></div>
       <div className="room-layout"><div className="room-board-column">
