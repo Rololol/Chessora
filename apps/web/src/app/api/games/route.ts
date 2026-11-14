@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Chess } from "chess.js";
 
 const controls: Record<string, { initialMs: number; incrementMs: number }> = {
   "1+0": { initialMs: 60_000, incrementMs: 0 },
