@@ -14,11 +14,15 @@ const controls: Record<string, { initialMs: number; incrementMs: number }> = {
   "15+10": { initialMs: 900_000, incrementMs: 10_000 },
 };
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const scope = new URL(request.url).searchParams.get("scope");
+  const where = scope === "history"
+    ? { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }] }
+    : { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }, { status: "WAITING" as const, blackPlayerId: null }] };
   const games = await prisma.game.findMany({
-    where: { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }, { status: "WAITING", blackPlayerId: null }] },
+    where,
     orderBy: { updatedAt: "desc" }, take: 30,
     select: {
       id: true, status: true, timeControl: true, result: true, pgn: true, currentFen: true,
