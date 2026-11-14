@@ -89,7 +89,7 @@ export default function GameRoom({ id }: { id: string }) {
 
   if(!game)return <main className="room-shell"><p>{error||"Loading game…"}</p><Link href="/multiplayer">Back to lobby</Link></main>;
   const finished=game.status==="COMPLETED"||game.status==="ABORTED";
-  const status=finished?(game.result==="1-0"?"White wins":game.result==="0-1"?"Black wins":"Draw"):game.status==="WAITING"?"Waiting for an opponent":myTurn?"Your move": "Opponent's turn";
+  const status=finished?(game.status==="ABORTED"?"Game cancelled":game.result==="1-0"?"White wins":game.result==="0-1"?"Black wins":"Draw"):game.status==="WAITING"?"Waiting for an opponent":myTurn?"Your move": "Opponent's turn";
 
   return <main className="room-shell">
     <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link><Link href="/profile">Profile</Link></div></header>
