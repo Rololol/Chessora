@@ -34,8 +34,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const viewer = await getViewer(await headers());
+  if (!viewer) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
   const timeControl = body && typeof body === "object" && "timeControl" in body && typeof body.timeControl === "string" ? body.timeControl : "5+0";
