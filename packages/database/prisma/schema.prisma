@@ -100,6 +100,7 @@ model Game {
   currentFen    String      @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   pgn           String      @default("")
   result        String?
+  drawOfferBy   String?
   whiteTimeMs   Int?
   blackTimeMs   Int?
   incrementMs   Int         @default(0)
