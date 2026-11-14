@@ -38,11 +38,12 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       const whiteTime = Math.max(0, (game.whiteTimeMs ?? 0) - (movingWhite ? elapsed : 0));
       const blackTime = Math.max(0, (game.blackTimeMs ?? 0) - (!movingWhite ? elapsed : 0));
       if ((movingWhite ? whiteTime : blackTime) <= 0) {
-        const timeoutResult = movingWhite ? "0-1" : "1-0";
-        await tx.game.updateMany({
+        const timeoutResult = chess.isInsufficientMaterial() ? "1/2-1/2" : movingWhite ? "0-1" : "1-0";
+        const expired = await tx.game.updateMany({
           where: { id, status: "ACTIVE", updatedAt: game.updatedAt },
-          data: { status: "COMPLETED", result: timeoutResult, endedAt: now, whiteTimeMs: whiteTime, blackTimeMs: blackTime },
+          data: { status: "COMPLETED", result: timeoutResult, endedAt: now, whiteTimeMs: whiteTime, blackTimeMs: blackTime, drawOfferBy: null },
         });
+        if (expired.count !== 1) throw new Error("GAME_CONFLICT");
         return { error: "Time expired.", status: 409 };
       }
 
