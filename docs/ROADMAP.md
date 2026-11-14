@@ -10,7 +10,7 @@
 - [x] Account registration and login foundation (Better Auth + Prisma; production hardening pending)
 - [x] Basic player profiles (username, bio, country code, initial rating fields)
 - [x] Local interactive chessboard with legal move validation
-- [ ] Server-authoritative game sessions and clocks
+- [x] Initial server-authoritative game session, legal move, and clock API (integration testing pending)
 - [ ] Realtime matchmaking for Bullet, Blitz, and Rapid
 - [ ] Resign, draw offers, disconnect recovery, and rematch
 - [ ] PGN export and game history
