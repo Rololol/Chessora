@@ -13,7 +13,7 @@
 - [x] Initial server-authoritative game session, legal move, and clock API (integration testing pending)
 - [x] Basic open-game lobby and polling-based two-player rooms (no WebSockets yet)
 - [ ] Realtime matchmaking for Bullet, Blitz, and Rapid
-- [ ] Resign, draw offers, disconnect recovery, and rematch
+- [x] Resignation, draw offers, and cancellation of waiting games (disconnect recovery and rematch pending)
 - [ ] PGN export and game history
 - [ ] Glicko-2 ratings with tests
 
