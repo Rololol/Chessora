@@ -11,12 +11,12 @@ const glyph: Record<string, string> = {
 };
 
 export default function ChessBoard() {
-  const [fen, setFen] = useState("start");
+  const [pgn, setPgn] = useState("");
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromotion, setPendingPromotion] = useState<{ from: Square; to: Square } | null>(null);
   const [notice, setNotice] = useState("White to move");
 
-  const game = useMemo(() => new Chess(fen === "start" ? undefined : fen), [fen]);
+  const game = useMemo(() => {\n    const position = new Chess();\n    if (pgn) position.loadPgn(pgn);\n    return position;\n  }, [pgn]);
   const history = game.history({ verbose: true });
   const legalTargets = selected
     ? game.moves({ square: selected, verbose: true }).map((move) => move.to)
@@ -37,7 +37,7 @@ export default function ChessBoard() {
     const next = new Chess(game.fen());
     try {
       next.move({ from, to, promotion });
-      setFen(next.fen());
+      setPgn(next.pgn());
       setNotice(statusText(next));
       setSelected(null);
       setPendingPromotion(null);
@@ -80,7 +80,7 @@ export default function ChessBoard() {
   }
 
   function restart() {
-    setFen("start");
+    setPgn("");
     setSelected(null);
     setPendingPromotion(null);
     setNotice("White to move");
