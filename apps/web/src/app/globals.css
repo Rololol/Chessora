@@ -134,3 +134,6 @@ footer .brand{font-size:16px}footer .brand-mark{width:24px;height:24px;font-size
 .auth-switch a{color:var(--green);font-weight:600}
 .auth-legal{text-align:center;font-size:9px;line-height:1.6;color:#7f8978;margin:22px 0 0}
 @media(max-width:520px){.auth-shell{padding:20px 5%}.auth-card{padding:28px 22px;margin-top:25px}.auth-brand{margin-bottom:34px}}
+
+.nav-actions{display:flex;align-items:center;gap:20px}.nav-login{font-size:12px;color:var(--muted)}.nav-login:hover{color:var(--green)}
+@media(max-width:520px){.nav-actions{gap:10px}.nav-login{font-size:11px}.nav-cta{font-size:10px;padding:9px 10px}}
