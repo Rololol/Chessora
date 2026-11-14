@@ -19,4 +19,17 @@ export const auth = betterAuth({
     cookieCache: { enabled: true, maxAge: 5 * 60 },
   },
   trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"],
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          const base = user.name.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 20) || "player";
+          const suffix = user.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toLowerCase();
+          await prisma.playerProfile.create({
+            data: { userId: user.id, username: `${base}${suffix}` },
+          });
+        },
+      },
+    },
+  },
 });
