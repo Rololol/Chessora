@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Chess, type Square } from "chess.js";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Settings } from "lucide-react";
+import { readSettings, playChessSound, type ChessoraSettings } from "@/lib/settings";
 
 type RoomGame = {
   id: string; status: "WAITING" | "ACTIVE" | "COMPLETED" | "ABORTED";
@@ -26,6 +27,8 @@ export default function GameRoom({ id }: { id: string }) {
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [now,setNow]=useState(Date.now());
+  const [prefs,setPrefs]=useState<ChessoraSettings|null>(null);
+  useEffect(()=>{const load=()=>setPrefs(readSettings());load();window.addEventListener("chessora-settings",load);return()=>window.removeEventListener("chessora-settings",load)},[]);
 
   const refresh=useCallback(async()=>{
     try {
@@ -61,6 +64,7 @@ export default function GameRoom({ id }: { id: string }) {
       const response=await fetch(`/api/games/${id}/moves`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from,to,promotion:promote})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||"Move rejected.");
+      playChessSound(chess.get(to) ? "capture" : "move");
       setSelected(null);setPromotion(null);await refresh();
     }catch(reason){setError(reason instanceof Error?reason.message:"Move failed.");await refresh();}
     finally{setBusy(false);}
@@ -92,7 +96,7 @@ export default function GameRoom({ id }: { id: string }) {
   const status=finished?(game.status==="ABORTED"?"Game cancelled":game.result==="1-0"?"White wins":game.result==="0-1"?"Black wins":"Draw"):game.status==="WAITING"?"Waiting for an opponent":myTurn?"Your move": "Opponent's turn";
 
   return <main className="room-shell">
-    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link>{!game.viewerIsGuest&&<Link href="/history">History</Link>}<a href={"/api/games/"+id+"/pgn"}>PGN</a>{!game.viewerIsGuest&&<Link href="/profile">Profile</Link>}{game.viewerIsGuest&&<Link href="/register">Create account</Link>}</div></header>
+    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link>{!game.viewerIsGuest&&<Link href="/history">History</Link>}<a href={"/api/games/"+id+"/pgn"}>PGN</a>{!game.viewerIsGuest&&<Link href="/profile">Profile</Link>}{game.viewerIsGuest&&<Link href="/register">Create account</Link>}<Link href="/settings" aria-label="Settings"><Settings size={15}/></Link></div></header>
     <section className="room-content"><Link className="profile-back" href="/multiplayer"><ArrowLeft size={15}/> Back to lobby</Link>
       <div className="room-heading"><div><span className="eyebrow">LIVE GAME · {game.timeControl}</span><h1>Play the position.</h1></div><span className="room-status">{status}</span></div>
       <div className="room-layout"><div className="room-board-column">
@@ -101,8 +105,8 @@ export default function GameRoom({ id }: { id: string }) {
           const square=`${"abcdefgh"[col]}${8-row}` as Square;
           const light=(row+col)%2===0;
           const isLast=history.at(-1)?.from===square||history.at(-1)?.to===square;
-          return <button key={square} type="button" role="gridcell" aria-label={square} disabled={!myTurn||busy} onClick={()=>clickSquare(square)} className={`room-square ${light?"light":"dark"} ${selected===square?"selected":""} ${isLast?"last":""}`}>
-            {piece&&<span className={piece.color==="w"?"piece-white":"piece-black"}>{pieces[piece.color+piece.type]}</span>}
+          return <button key={square} type="button" role="gridcell" aria-label={square} disabled={!myTurn||busy} onClick={()=>clickSquare(square)} className={`room-square ${prefs?.board==="blue"?"ocean":prefs?.board==="wood"?"wood":prefs?.board==="green"?"forest":light?"light":"dark"} ${selected===square?"selected":""} ${isLast?"last":""}`}>
+            {piece&&<span className={piece.color==="w"?"piece-white":"piece-black"}>{prefs?.pieces==="minimal" ? ({k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"}[piece.type]) : pieces[piece.color+piece.type]}</span>}
             {targets.includes(square)&&<i className={piece?"room-capture":"room-target"}/>}
             {col===0&&<small>{8-row}</small>}
             {row===7&&<em>{"abcdefgh"[col]}</em>}
