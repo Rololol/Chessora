@@ -49,7 +49,7 @@ infra/
 
 ## Development status
 
-The repository includes a responsive landing page, a local legal-move chessboard, Better Auth email/password authentication, editable player profiles, and initial PostgreSQL models for persistent games and moves. Authentication and multiplayer are not production-ready: database setup, server-authoritative game APIs, realtime transport, security hardening, and automated tests are still pending. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
+The repository includes a responsive landing page, a local legal-move chessboard, Better Auth email/password authentication, editable player profiles, a basic open-game lobby with polling-based two-player rooms, and PostgreSQL models for persistent games and moves. Authentication and multiplayer are not production-ready: database setup, server-authoritative game APIs, realtime transport, security hardening, and automated tests are still pending. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
 
 ## Local development
 
