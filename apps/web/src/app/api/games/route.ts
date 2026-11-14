@@ -30,7 +30,7 @@ export async function GET(request: Request) {
       blackPlayer: { select: { id: true, playerProfile: { select: { username: true } } } },
     },
   });
-  return NextResponse.json({ games, viewerId: viewer.id });
+  return NextResponse.json({ games, viewerId: viewer.id, viewerIsGuest: viewer.isGuest });
 }
 
 export async function POST(request: Request) {
