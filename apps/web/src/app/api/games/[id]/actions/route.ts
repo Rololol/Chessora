@@ -2,15 +2,15 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { Chess } from "chess.js";
 import type { Prisma } from "@prisma/client";
-import { auth } from "@/lib/auth";
+import { getViewer } from "@/lib/guest";
 import { prisma } from "@/lib/prisma";
 
 const allowed = ["resign", "offer_draw", "accept_draw", "decline_draw", "cancel"] as const;
 type Action = typeof allowed[number];
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const viewer = await getViewer(await headers());
+  if (!viewer) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await context.params;
 
   let body: unknown;
@@ -24,8 +24,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     const result = await prisma.$transaction(async (tx) => {
       const game = await tx.game.findUnique({ where: { id } });
       if (!game) return { error: "Game not found.", status: 404 };
-      const isWhite = game.whitePlayerId === session.user.id;
-      const isBlack = game.blackPlayerId === session.user.id;
+      const isWhite = game.whitePlayerId === viewer.id;
+      const isBlack = game.blackPlayerId === viewer.id;
       if (!isWhite && !isBlack) return { error: "Forbidden", status: 403 };
       const now = new Date();
 
@@ -64,12 +64,12 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         data = { status: "COMPLETED", result: isWhite ? "0-1" : "1-0", endedAt: now, whiteTimeMs: whiteTime, blackTimeMs: blackTime, drawOfferBy: null };
       } else if (action === "offer_draw") {
         if (game.drawOfferBy) return { error: "A draw offer is already pending.", status: 409 };
-        data = { drawOfferBy: session.user.id, whiteTimeMs: whiteTime, blackTimeMs: blackTime, lastMoveAt: now };
+        data = { drawOfferBy: viewer.id, whiteTimeMs: whiteTime, blackTimeMs: blackTime, lastMoveAt: now };
       } else if (action === "accept_draw") {
-        if (!game.drawOfferBy || game.drawOfferBy === session.user.id) return { error: "There is no draw offer from your opponent.", status: 409 };
+        if (!game.drawOfferBy || game.drawOfferBy === viewer.id) return { error: "There is no draw offer from your opponent.", status: 409 };
         data = { status: "COMPLETED", result: "1/2-1/2", endedAt: now, whiteTimeMs: whiteTime, blackTimeMs: blackTime, drawOfferBy: null };
       } else {
-        if (!game.drawOfferBy || game.drawOfferBy === session.user.id) return { error: "There is no opponent draw offer to decline.", status: 409 };
+        if (!game.drawOfferBy || game.drawOfferBy === viewer.id) return { error: "There is no opponent draw offer to decline.", status: 409 };
         data = { drawOfferBy: null, whiteTimeMs: whiteTime, blackTimeMs: blackTime, lastMoveAt: now };
       }
 
