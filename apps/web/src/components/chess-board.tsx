@@ -16,7 +16,11 @@ export default function ChessBoard() {
   const [pendingPromotion, setPendingPromotion] = useState<{ from: Square; to: Square } | null>(null);
   const [notice, setNotice] = useState("White to move");
 
-  const game = useMemo(() => {\n    const position = new Chess();\n    if (pgn) position.loadPgn(pgn);\n    return position;\n  }, [pgn]);
+  const game = useMemo(() => {
+    const position = new Chess();
+    if (pgn) position.loadPgn(pgn);
+    return position;
+  }, [pgn]);
   const history = game.history({ verbose: true });
   const legalTargets = selected
     ? game.moves({ square: selected, verbose: true }).map((move) => move.to)
@@ -71,9 +75,10 @@ export default function ChessBoard() {
 
   function undo() {
     if (!history.length) return;
-    const next = new Chess(game.fen());
+    const next = new Chess();
+    if (pgn) next.loadPgn(pgn);
     next.undo();
-    setFen(next.fen());
+    setPgn(next.pgn());
     setSelected(null);
     setPendingPromotion(null);
     setNotice(statusText(next));
