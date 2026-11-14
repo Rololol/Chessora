@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: chessora
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm db:generate && pnpm --filter @chessora/web build
+    startCommand: pnpm db:push && pnpm --filter @chessora/web start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chessora-db
+          property: connectionString
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        value: https://chessora.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://chessora.onrender.com
+
+databases:
+  - name: chessora-db
+    plan: free
+    region: frankfurt
+    databaseName: chessora_db
+    user: chessora_db_user
+    postgresMajorVersion: 16
