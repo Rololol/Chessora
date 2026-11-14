@@ -19,9 +19,9 @@ export default function HomePage() {
         <div className="hero-copy">
           <div className="eyebrow"><span className="pulse" /> THE NEXT MOVE IN ONLINE CHESS</div>
           <h1>Think beyond<br /><em>the board.</em></h1>
-          <p className="hero-text">A sharper place to play, learn, and compete. Built for the love of the game — and the next generation of players.</p>
+          <p className="hero-text">A sharper place to play, learn, and compete. Jump into an unranked guest game instantly, or create an account to build your chess profile.</p>
           <div className="hero-actions">
-            <a className="primary-button" href="/multiplayer">Find a game <ArrowUpRight size={17} /></a>
+            <a className="primary-button" href="/multiplayer">Play as guest <ArrowUpRight size={17} /></a>
             <a className="text-link" href="#features">Discover the platform</a>
           </div>
           <div className="hero-note"><span className="note-line" /> PLAY · LEARN · MASTER</div>
