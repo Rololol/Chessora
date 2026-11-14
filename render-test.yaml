@@ -5,7 +5,7 @@ services:
     plan: free
     region: frankfurt
     branch: main
-    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm db:generate && pnpm --filter @chessora/web build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm db:generate && pnpm --filter @chessora/web build
     startCommand: pnpm db:push && pnpm --filter @chessora/web start
     healthCheckPath: /
     envVars:
