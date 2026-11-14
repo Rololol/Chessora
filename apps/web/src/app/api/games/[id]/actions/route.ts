@@ -84,8 +84,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     if ("error" in result) return NextResponse.json({ error: result.error }, { status: result.status });
     return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof Error && error.message === "GAME_CONFLICT") {
-      return NextResponse.json({ error: "Game changed; refresh and try again." }, { status: 409 });
+    if (error instanceof Error && error.message === "GAME_CONFLICT") return NextResponse.json({ error: "Game changed; refresh and try again." }, { status: 409 });
+    if (error && typeof error === "object" && "code" in error && error.code === "P2034") {
+      return NextResponse.json({ error: "Concurrent game update; refresh and try again." }, { status: 409 });
     }
     throw error;
   }
