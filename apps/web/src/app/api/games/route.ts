@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { getViewer } from "@/lib/guest";
 import { prisma } from "@/lib/prisma";
 
 const controls: Record<string, { initialMs: number; incrementMs: number }> = {
@@ -14,12 +14,12 @@ const controls: Record<string, { initialMs: number; incrementMs: number }> = {
 };
 
 export async function GET(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const viewer = await getViewer(await headers());
+  if (!viewer) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const scope = new URL(request.url).searchParams.get("scope");
   const where = scope === "history"
-    ? { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }] }
-    : { OR: [{ whitePlayerId: session.user.id }, { blackPlayerId: session.user.id }, { status: "WAITING" as const, blackPlayerId: null }] };
+    ? { OR: [{ whitePlayerId: viewer.id }, { blackPlayerId: viewer.id }] }
+    : { OR: [{ whitePlayerId: viewer.id }, { blackPlayerId: viewer.id }, { status: "WAITING" as const, blackPlayerId: null }] };
   const games = await prisma.game.findMany({
     where,
     orderBy: { updatedAt: "desc" }, take: 30,
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
       blackPlayer: { select: { id: true, playerProfile: { select: { username: true } } } },
     },
   });
-  return NextResponse.json({ games, viewerId: session.user.id });
+  return NextResponse.json({ games, viewerId: viewer.id });
 }
 
 export async function POST(request: Request) {
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
   const game = await prisma.game.create({
     data: {
-      whitePlayerId: session.user.id, timeControl,
+      whitePlayerId: viewer.id, timeControl,
       whiteTimeMs: control.initialMs, blackTimeMs: control.initialMs,
       incrementMs: control.incrementMs,
     },
