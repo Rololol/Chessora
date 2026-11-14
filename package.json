@@ -3,13 +3,18 @@
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@9.15.4",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:generate": "pnpm --filter @chessora/database db:generate",
+    "db:push": "pnpm --filter @chessora/database db:push",
+    "db:studio": "pnpm --filter @chessora/database db:studio"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
