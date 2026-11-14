@@ -49,7 +49,7 @@ infra/
 
 ## Development status
 
-The repository includes a responsive landing page, a local legal-move chessboard, Better Auth email/password authentication, editable player profiles, a basic open-game lobby with polling-based two-player rooms, and PostgreSQL models for persistent games and moves. Authentication and multiplayer are not production-ready: database setup, server-authoritative game APIs, realtime transport, security hardening, and automated tests are still pending. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
+The repository includes a responsive landing page, a local legal-move chessboard, Better Auth email/password authentication, editable player profiles, a guest-accessible open-game lobby with polling-based two-player rooms, signed anonymous identities, and PostgreSQL models for persistent games and moves. Guest users can create and join unranked games without registering; guest identities are stored as unverified player records and kept in a signed, HTTP-only browser cookie. Profiles and account-level history remain account features. Authentication and multiplayer are not production-ready: guest abuse controls and cleanup, database setup, realtime transport, security hardening, and automated tests are still pending. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
 
 ## Local development
 
