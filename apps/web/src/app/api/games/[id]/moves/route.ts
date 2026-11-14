@@ -17,6 +17,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       !/^[a-h][1-8]$/.test(input.from) || !/^[a-h][1-8]$/.test(input.to)) {
     return NextResponse.json({ error: "Move squares must be valid chess coordinates." }, { status: 400 });
   }
+  const from = input.from as string;
+  const to = input.to as string;
   const promotion = typeof input.promotion === "string" ? input.promotion.toLowerCase() : "q";
   if (!["q", "r", "b", "n"].includes(promotion)) return NextResponse.json({ error: "Invalid promotion piece." }, { status: 400 });
 
@@ -48,7 +50,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       }
 
       let move;
-      try { move = chess.move({ from: input.from, to: input.to, promotion }); }
+      try { move = chess.move({ from, to, promotion }); }
       catch { return { error: "Illegal move.", status: 400 }; }
       const nextWhiteTime = whiteTime + (movingWhite ? game.incrementMs : 0);
       const nextBlackTime = blackTime + (!movingWhite ? game.incrementMs : 0);
