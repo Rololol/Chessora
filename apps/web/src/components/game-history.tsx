@@ -18,7 +18,7 @@ export default function GameHistory() {
   const [error,setError]=useState("");
   const [loading,setLoading]=useState(true);
   useEffect(()=>{
-    fetch("/api/games",{cache:"no-store"}).then(async response=>{
+    fetch("/api/games?scope=history",{cache:"no-store"}).then(async response=>{
       const data=await response.json();
       if(response.status===401){router.push("/login");return;}
       if(!response.ok)throw new Error(data.error||"Could not load history.");
