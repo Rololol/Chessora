@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { Chess } from "chess.js";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -58,7 +59,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         return { game: { status: "COMPLETED", result: outcome, drawOfferBy: null } };
       }
 
-      let data: Record<string, unknown>;
+      let data: Prisma.GameUpdateManyMutationInput;
       if (action === "resign") {
         data = { status: "COMPLETED", result: isWhite ? "0-1" : "1-0", endedAt: now, whiteTimeMs: whiteTime, blackTimeMs: blackTime, drawOfferBy: null };
       } else if (action === "offer_draw") {
