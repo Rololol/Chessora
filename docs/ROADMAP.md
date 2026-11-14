@@ -7,8 +7,9 @@
 - [ ] Add architecture decision records and threat model
 
 ## Phase 1 — Playable MVP
-- [ ] Account registration, login, and player profiles
-- [ ] Interactive chessboard with complete legal move validation
+- [x] Account registration and login foundation (Better Auth + Prisma; production hardening pending)
+- [x] Basic player profiles (username, bio, country code, initial rating fields)
+- [x] Local interactive chessboard with legal move validation
 - [ ] Server-authoritative game sessions and clocks
 - [ ] Realtime matchmaking for Bullet, Blitz, and Rapid
 - [ ] Resign, draw offers, disconnect recovery, and rematch
