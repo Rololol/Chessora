@@ -12,7 +12,7 @@ export default function HomePage() {
       <nav className="nav">
         <a className="brand" href="#"><span className="brand-mark">C</span> chessora</a>
         <div className="nav-links"><a href="/play">Play</a><a href="#features">Features</a><a href="#vision">Our vision</a></div>
-        <a className="nav-cta" href="#get-started">Get started <ArrowUpRight size={15} /></a>
+        <div className="nav-actions"><a className="nav-login" href="/login">Sign in</a><a className="nav-cta" href="/register">Join Chessora <ArrowUpRight size={15} /></a></div>
       </nav>
 
       <section className="hero" id="vision">
