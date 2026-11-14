@@ -18,9 +18,9 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        value: https://chessora.onrender.com
+        value: https://chessora-ek50.onrender.com
       - key: NEXT_PUBLIC_APP_URL
-        value: https://chessora.onrender.com
+        value: https://chessora-ek50.onrender.com
 
 databases:
   - name: chessora-db
