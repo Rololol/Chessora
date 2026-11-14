@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Chess, type Square } from "chess.js";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 
@@ -20,7 +19,6 @@ const pieces: Record<string,string> = { wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"
 const clock = (ms:number) => `${Math.floor(ms/60000)}:${String(Math.floor(ms%60000/1000)).padStart(2,"0")}`;
 
 export default function GameRoom({ id }: { id: string }) {
-  const router=useRouter();
   const [game,setGame]=useState<RoomGame|null>(null);
   const [userId,setUserId]=useState("");
   const [selected,setSelected]=useState<Square|null>(null);
@@ -40,7 +38,7 @@ export default function GameRoom({ id }: { id: string }) {
       setUserId((current)=>current || data.game.viewerId || "");
       setError("");
     } catch(reason){setError(reason instanceof Error?reason.message:"Could not load game.");}
-  },[id,router]);
+  },[id]);
 
   useEffect(()=>{void refresh();const poll=window.setInterval(refresh,2000);const tick=window.setInterval(()=>setNow(Date.now()),250);return()=>{window.clearInterval(poll);window.clearInterval(tick)};},[refresh]);
 
