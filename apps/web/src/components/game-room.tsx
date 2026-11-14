@@ -101,12 +101,12 @@ export default function GameRoom({ id }: { id: string }) {
       <div className="room-heading"><div><span className="eyebrow">LIVE GAME · {game.timeControl}</span><h1>Play the position.</h1></div><span className="room-status">{status}</span></div>
       <div className="room-layout"><div className="room-board-column">
         <div className="room-player"><span>♚</span><div><b>{game.blackPlayer?.playerProfile?.username||"Black"}</b><small>{viewerIsBlack?"You":""}</small></div><strong className={chess.turn()==="b"&&game.status==="ACTIVE"?"clock-active":""}>{clock(remaining("b"))}</strong></div>
-        <div className="room-board" role="grid" aria-label="Chess game board">{chess.board().flatMap((rank,row)=>rank.map((piece,col)=>{
+        <div className={`room-board ${prefs?.pieces==="minimal"?"pieces-minimal":""}`} role="grid" aria-label="Chess game board">{chess.board().flatMap((rank,row)=>rank.map((piece,col)=>{
           const square=`${"abcdefgh"[col]}${8-row}` as Square;
           const light=(row+col)%2===0;
           const isLast=history.at(-1)?.from===square||history.at(-1)?.to===square;
           return <button key={square} type="button" role="gridcell" aria-label={square} disabled={!myTurn||busy} onClick={()=>clickSquare(square)} className={`room-square ${prefs?.board==="blue"?"ocean":prefs?.board==="wood"?"wood":prefs?.board==="green"?"forest":light?"light":"dark"} ${selected===square?"selected":""} ${isLast?"last":""}`}>
-            {piece&&<span className={piece.color==="w"?"piece-white":"piece-black"}>{prefs?.pieces==="minimal" ? ({k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"}[piece.type]) : pieces[piece.color+piece.type]}</span>}
+            {piece&&<span className={piece.color==="w"?"piece-white":"piece-black"}>{prefs?.pieces==="minimal" ? piece.type.toUpperCase() : pieces[piece.color+piece.type]}</span>}
             {targets.includes(square)&&<i className={piece?"room-capture":"room-target"}/>}
             {col===0&&<small>{8-row}</small>}
             {row===7&&<em>{"abcdefgh"[col]}</em>}
