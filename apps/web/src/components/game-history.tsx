@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Download, History as HistoryIcon } from "lucide-react";
 
 type Item = {
-  id: string; status: string; timeControl: string; result: string | null; createdAt: string;
+  id: string; status: string; timeControl: string; result: string | null; pgn: string; createdAt: string;
   whitePlayer: { id: string; playerProfile: { username: string } | null };
   blackPlayer: { id: string; playerProfile: { username: string } | null } | null;
 };
