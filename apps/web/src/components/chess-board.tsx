@@ -96,7 +96,7 @@ export default function ChessBoard() {
       <header className="play-nav">
         <Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link>
         <span className="play-kicker">PRACTICE BOARD · LOCAL GAME</span>
-        <Link className="back-link" href="/"><ArrowLeft size={15} /> Home</Link>
+        <div className="play-nav-actions"><Link className="back-link" href="/profile">Player profile</Link><Link className="back-link" href="/"><ArrowLeft size={15} /> Home</Link></div>
       </header>
 
       <section className="play-layout">
