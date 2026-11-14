@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { Chess } from "chess.js";
-import { auth } from "@/lib/auth";
+import { getViewer } from "@/lib/guest";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const viewer = await getViewer(await headers());
+  if (!viewer) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await context.params;
 
   let body: unknown;
@@ -26,8 +26,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     const result = await prisma.$transaction(async (tx) => {
       const game = await tx.game.findUnique({ where: { id } });
       if (!game) return { error: "Game not found.", status: 404 };
-      const userIsWhite = game.whitePlayerId === session.user.id;
-      const userIsBlack = game.blackPlayerId === session.user.id;
+      const userIsWhite = game.whitePlayerId === viewer.id;
+      const userIsBlack = game.blackPlayerId === viewer.id;
       if (!userIsWhite && !userIsBlack) return { error: "Forbidden", status: 403 };
       if (game.status !== "ACTIVE" || !game.blackPlayerId || !game.lastMoveAt) return { error: "Game is not active.", status: 409 };
 
