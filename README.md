@@ -11,6 +11,7 @@ Chessora brings together live multiplayer chess, accurate ratings, engine analys
 - **Web:** Next.js, React, TypeScript, Tailwind CSS
 - **API:** Node.js, NestJS, TypeScript
 - **Data:** PostgreSQL, Prisma, Redis
+- **Authentication:** Better Auth with database-backed sessions
 - **Realtime:** WebSockets / Socket.IO
 - **Chess rules:** server-authoritative rules engine
 - **Analysis:** Stockfish (WASM initially; worker-based analysis later)
@@ -48,7 +49,7 @@ infra/
 
 ## Development status
 
-The repository is being bootstrapped. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
+The repository includes a responsive landing page, a local legal-move chessboard, and an initial Better Auth email/password flow backed by Prisma/PostgreSQL. Authentication requires a configured database and secrets; it has not yet been production-hardened. See [docs/ROADMAP.md](docs/ROADMAP.md) for the staged delivery plan.
 
 ## Local development
 
@@ -59,7 +60,7 @@ pnpm install
 pnpm dev
 ```
 
-Individual apps and packages will become runnable as their initial implementation lands.
+Configure `.env` using `.env.example`, then run `pnpm db:generate` and `pnpm db:push` against a development PostgreSQL database before starting the web app. The database push command is for local development only; production should use reviewed migrations.
 
 ## License
 
