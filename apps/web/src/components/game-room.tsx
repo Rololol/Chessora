@@ -14,6 +14,7 @@ type RoomGame = {
   whitePlayer: { id: string; playerProfile: { username: string } | null };
   blackPlayer: { id: string; playerProfile: { username: string } | null } | null;
   moves: { ply: number; san: string }[];
+  viewerIsGuest?: boolean;
 };
 const pieces: Record<string,string> = { wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"♘",wp:"♙",bk:"♚",bq:"♛",br:"♜",bb:"♝",bn:"♞",bp:"♟" };
 const clock = (ms:number) => `${Math.floor(ms/60000)}:${String(Math.floor(ms%60000/1000)).padStart(2,"0")}`;
@@ -30,9 +31,10 @@ export default function GameRoom({ id }: { id: string }) {
 
   const refresh=useCallback(async()=>{
     try {
+      await fetch("/api/guest/session",{method:"POST"});
       const response=await fetch(`/api/games/${id}`,{cache:"no-store"});
       const data=await response.json();
-      if(response.status===401){router.push("/login");return;}
+
       if(!response.ok)throw new Error(data.error||"Could not load game.");
       setGame(data.game);
       setUserId((current)=>current || data.game.viewerId || "");
@@ -92,7 +94,7 @@ export default function GameRoom({ id }: { id: string }) {
   const status=finished?(game.status==="ABORTED"?"Game cancelled":game.result==="1-0"?"White wins":game.result==="0-1"?"Black wins":"Draw"):game.status==="WAITING"?"Waiting for an opponent":myTurn?"Your move": "Opponent's turn";
 
   return <main className="room-shell">
-    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link><Link href="/history">History</Link><a href={"/api/games/"+id+"/pgn"}>PGN</a><Link href="/profile">Profile</Link></div></header>
+    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div><Link href="/multiplayer">Lobby</Link>{!game.viewerIsGuest&&<Link href="/history">History</Link>}<a href={"/api/games/"+id+"/pgn"}>PGN</a>{!game.viewerIsGuest&&<Link href="/profile">Profile</Link>}{game.viewerIsGuest&&<Link href="/register">Create account</Link>}</div></header>
     <section className="room-content"><Link className="profile-back" href="/multiplayer"><ArrowLeft size={15}/> Back to lobby</Link>
       <div className="room-heading"><div><span className="eyebrow">LIVE GAME · {game.timeControl}</span><h1>Play the position.</h1></div><span className="room-status">{status}</span></div>
       <div className="room-layout"><div className="room-board-column">
@@ -111,7 +113,7 @@ export default function GameRoom({ id }: { id: string }) {
         {promotion&&<div className="room-promotion">Promote to {(["q","r","b","n"] as const).map(type=><button key={type} onClick={()=>void sendMove(promotion.from,promotion.to,type)}>{pieces[chess.turn()+type]}</button>)}</div>}
         <div className="room-player"><span>♔</span><div><b>{game.whitePlayer.playerProfile?.username||"White"}</b><small>{viewerIsWhite?"You":""}</small></div><strong className={chess.turn()==="w"&&game.status==="ACTIVE"?"clock-active":""}>{clock(remaining("w"))}</strong></div>
       </div>
-      <aside className="room-panel"><span className="eyebrow">GAME DETAILS</span><h2>{status}</h2><p>{game.status==="WAITING"?"Share this game ID with an opponent.":finished?"This game is complete.":"Moves are validated by the Chessora server. The board refreshes automatically."}</p><div className="room-moves-head"><span>MOVE HISTORY</span><span>{game.moves.length} PLY</span></div><div className="room-moves">{game.moves.length?Array.from({length:Math.ceil(game.moves.length/2)},(_,i)=><div key={i}><small>{i+1}.</small><b>{game.moves[i*2]?.san}</b><b>{game.moves[i*2+1]?.san||""}</b></div>):<p>No moves yet.</p>}</div>{game.status==="WAITING"&&viewerIsWhite&&<button className="room-action secondary" disabled={busy} onClick={()=>void gameAction("cancel")}>Cancel challenge</button>}{game.status==="ACTIVE"&&<div className="room-actions">{game.drawOfferBy&&game.drawOfferBy!==userId?<><p className="room-draw-pending">Opponent offers a draw.</p><button className="room-action" disabled={busy} onClick={()=>void gameAction("accept_draw")}>Accept draw</button><button className="room-action secondary" disabled={busy} onClick={()=>void gameAction("decline_draw")}>Decline</button></>:<button className="room-action secondary" disabled={busy||!!game.drawOfferBy} onClick={()=>void gameAction("offer_draw")}>{game.drawOfferBy===userId?"Draw offer sent":"Offer draw"}</button>}<button className="room-action danger" disabled={busy} onClick={()=>void gameAction("resign")}>Resign</button></div>}<button className="room-refresh" onClick={()=>void refresh()}><RefreshCw size={14}/> Sync now</button>{error&&<p className="auth-error" role="alert">{error}</p>}<small className="room-id">GAME ID · {game.id}</small></aside></div>
+      <aside className="room-panel"><span className="eyebrow">GAME DETAILS</span><h2>{status}</h2><p>{game.viewerIsGuest?"Guest game · unranked. Create an account to keep a player profile and personal history.":game.status==="WAITING"?"Share this game ID with an opponent.":finished?"This game is complete.":"Moves are validated by the Chessora server. The board refreshes automatically."}</p><div className="room-moves-head"><span>MOVE HISTORY</span><span>{game.moves.length} PLY</span></div><div className="room-moves">{game.moves.length?Array.from({length:Math.ceil(game.moves.length/2)},(_,i)=><div key={i}><small>{i+1}.</small><b>{game.moves[i*2]?.san}</b><b>{game.moves[i*2+1]?.san||""}</b></div>):<p>No moves yet.</p>}</div>{game.status==="WAITING"&&viewerIsWhite&&<button className="room-action secondary" disabled={busy} onClick={()=>void gameAction("cancel")}>Cancel challenge</button>}{game.status==="ACTIVE"&&<div className="room-actions">{game.drawOfferBy&&game.drawOfferBy!==userId?<><p className="room-draw-pending">Opponent offers a draw.</p><button className="room-action" disabled={busy} onClick={()=>void gameAction("accept_draw")}>Accept draw</button><button className="room-action secondary" disabled={busy} onClick={()=>void gameAction("decline_draw")}>Decline</button></>:<button className="room-action secondary" disabled={busy||!!game.drawOfferBy} onClick={()=>void gameAction("offer_draw")}>{game.drawOfferBy===userId?"Draw offer sent":"Offer draw"}</button>}<button className="room-action danger" disabled={busy} onClick={()=>void gameAction("resign")}>Resign</button></div>}<button className="room-refresh" onClick={()=>void refresh()}><RefreshCw size={14}/> Sync now</button>{error&&<p className="auth-error" role="alert">{error}</p>}<small className="room-id">GAME ID · {game.id}</small></aside></div>
     </section>
   </main>;
 }
