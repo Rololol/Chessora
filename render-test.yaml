@@ -5,7 +5,7 @@ services:
     plan: free
     region: frankfurt
     branch: main
-    buildCommand: pnpm --version && pnpm install --no-frozen-lockfile --reporter=append-only && pnpm db:generate && pnpm --filter @chessora/web build
+    buildCommand: pnpm --version && pnpm install --no-frozen-lockfile --prod=false --reporter=append-only && pnpm db:generate && pnpm --filter @chessora/web build
     startCommand: pnpm db:push && pnpm --filter @chessora/web start
     healthCheckPath: /
     envVars:
