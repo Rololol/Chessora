@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, RefreshCw, Swords } from "lucide-react";
 
 type Game = {
@@ -15,7 +14,6 @@ type Game = {
 const controls = ["1+0", "3+0", "3+2", "5+0", "5+3", "10+0", "15+10"];
 
 export default function Lobby() {
-  const router = useRouter();
   const [games, setGames] = useState<Game[]>([]);
   const [viewerId, setViewerId] = useState("");
   const [isGuest, setIsGuest] = useState(true);
