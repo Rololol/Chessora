@@ -57,7 +57,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         where: { id, status: "ACTIVE", updatedAt: game.updatedAt },
         data: {
           currentFen: chess.fen(), pgn: chess.pgn(), whiteTimeMs: nextWhiteTime,
-          blackTimeMs: nextBlackTime, lastMoveAt: now,
+          blackTimeMs: nextBlackTime, lastMoveAt: now, drawOfferBy: null,
           ...(terminal ? { status: "COMPLETED" as const, result: outcome, endedAt: now } : {}),
         },
       });
