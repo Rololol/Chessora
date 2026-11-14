@@ -14,7 +14,7 @@
 - [x] Basic open-game lobby and polling-based two-player rooms (no WebSockets yet)
 - [ ] Realtime matchmaking for Bullet, Blitz, and Rapid
 - [x] Resignation, draw offers, and cancellation of waiting games (disconnect recovery and rematch pending)
-- [ ] PGN export and game history
+- [x] PGN export and basic game history
 - [ ] Glicko-2 ratings with tests
 
 ## Phase 2 — Analysis and learning
