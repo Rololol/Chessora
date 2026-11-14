@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, RefreshCw, Swords } from "lucide-react";
+import { ArrowLeft, Plus, RefreshCw, Swords, Settings } from "lucide-react";
 
 type Game = {
   id: string; status: "WAITING" | "ACTIVE" | "COMPLETED" | "ABORTED";
@@ -66,7 +66,7 @@ export default function Lobby() {
   }
 
   return <main className="lobby-shell">
-    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div>{!isGuest && <><Link href="/history">History</Link><Link href="/profile">Profile</Link></>}<Link href="/play">Practice board</Link>{isGuest && <Link href="/register">Create account</Link>}</div></header>
+    <header className="lobby-nav"><Link className="brand" href="/"><span className="brand-mark">C</span> chessora</Link><div>{!isGuest && <><Link href="/history">History</Link><Link href="/profile">Profile</Link></>}<Link href="/play">Practice board</Link>{isGuest && <Link href="/register">Create account</Link>}<Link href="/settings" aria-label="Settings"><Settings size={15}/></Link></div></header>
     <section className="lobby-content">
       <Link className="profile-back" href="/"><ArrowLeft size={15}/> Back home</Link>
       <div className="lobby-heading"><span className="eyebrow">ONLINE ARENA · EARLY ACCESS</span><h1>Find your next<br/><em>opponent.</em></h1><p>Create a challenge or join an open game. Games are currently turn-synchronized by polling.</p></div>
