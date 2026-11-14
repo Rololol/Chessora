@@ -55,3 +55,60 @@ footer{min-height:80px;border-top:1px solid var(--line);display:flex;align-items
 footer .brand{font-size:16px}footer .brand-mark{width:24px;height:24px;font-size:16px}footer>span{font-size:9px}
 @media(max-width:850px){.shell{padding:0 5%}.hero{grid-template-columns:1fr;padding:70px 0 60px;gap:10px}.hero-copy{max-width:650px}.board-stage{min-height:500px}.board-frame{width:min(82vw,410px)}.feature-grid{grid-template-columns:1fr}.feature{min-height:150px}.feature h3{margin-top:22px}.nav-links{display:none}}
 @media(max-width:520px){.nav{height:70px}.nav-cta{padding:9px 11px;font-size:11px}h1{letter-spacing:-4px}.hero-text{font-size:14px}.hero-actions{align-items:flex-start;flex-direction:column;gap:18px}.hero-note{margin-top:42px}.board-stage{min-height:390px}.board-frame{width:min(88vw,360px);padding:7px}.square{font-size:clamp(20px,7vw,32px)}.rating-card{right:-2px;top:20px;transform:scale(.85);transform-origin:top right}.insight-card{left:-5px;bottom:38px;transform:scale(.88);transform-origin:bottom left}.board-coordinate{font-size:7px}footer{gap:15px;flex-wrap:wrap;padding:20px 0}footer>span:nth-child(2){display:none}}
+
+/* Playable chessboard */
+.play-shell{max-width:1440px;margin:auto;padding:0 7.2%;min-height:100vh}
+.play-nav{height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.play-kicker{font:10px 'DM Mono',monospace;letter-spacing:1.4px;color:var(--muted)}
+.back-link{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.play-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:6%;padding:52px 0 70px;align-items:start}
+.play-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px;gap:15px}
+.play-heading h1{font-size:clamp(34px,4vw,52px);letter-spacing:-2.5px;margin:10px 0 0}
+.turn-indicator{font:11px 'DM Mono',monospace;color:var(--muted);display:flex;align-items:center;gap:9px;padding-bottom:8px}
+.turn-indicator i,.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}
+.turn-indicator.black-turn i{background:#d9dfd1}
+.live-board-wrap{display:grid;grid-template-columns:18px minmax(0,1fr) 18px;gap:8px;align-items:stretch}
+.live-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:8px solid #252d22;box-shadow:0 25px 70px #0007;aspect-ratio:1}
+.live-square{border:0;border-radius:0;position:relative;display:grid;place-items:center;padding:0;aspect-ratio:1;cursor:pointer;min-width:0}
+.live-square.light{background:#e4e8d8}.live-square.dark{background:#758b64}
+.live-square.selected{background:#c4e66d}
+.live-square.last:before{content:"";position:absolute;inset:0;background:#d6ed7b66}
+.live-square>span:not(.move-dot):not(.capture-dot){position:relative;z-index:1;font-family:'DejaVu Sans','Segoe UI Symbol',serif;font-size:clamp(25px,5.2vw,64px);line-height:1}
+.piece-white{color:#fffdf1;text-shadow:0 2px 2px #283023,0 0 1px #111;-webkit-text-stroke:1px #333b30}
+.piece-black{color:#182018;text-shadow:0 1px 1px #fff8}
+.move-dot{position:absolute;width:24%;height:24%;border-radius:50%;background:#253a2580;z-index:2}
+.capture-dot{position:absolute;inset:5%;border:5px solid #273b2580;border-radius:50%;z-index:2}
+.rank-label,.file-label{position:absolute;font:10px 'DM Mono',monospace;color:#34412e;z-index:3}
+.rank-label{top:4px;left:5px}.file-label{right:5px;bottom:3px}
+.board-coords{display:flex;flex-direction:column;justify-content:space-around;align-items:center;font:10px 'DM Mono',monospace;color:#84907d}
+.file-coords{margin:9px 26px 0;display:grid;grid-template-columns:repeat(8,1fr);text-align:center;font:10px 'DM Mono',monospace;color:#84907d}
+.board-status{display:flex;align-items:center;gap:10px;margin-top:19px;padding:13px 15px;background:#1b211a;border:1px solid var(--line);font-size:12px;color:#d6ddcf}
+.status-dot{width:6px;height:6px}
+.game-panel{background:#171c17;border:1px solid var(--line);padding:22px;min-height:470px}
+.panel-top{display:flex;justify-content:space-between;align-items:center}
+.local-tag{font:9px 'DM Mono',monospace;color:var(--green);border:1px solid #46543b;padding:5px 7px}
+.game-panel h2{font-size:23px;letter-spacing:-.8px;margin:22px 0 8px}
+.panel-copy{font-size:12px;line-height:1.65;color:var(--muted);margin:0 0 22px}
+.player-card{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #30382e;margin-top:8px}
+.active-player{border-color:#71864e;background:#20281b}
+.player-piece{font-size:27px;color:#f7f6e9;text-shadow:0 1px 2px #222}
+.black-king{color:#141914;text-shadow:0 0 1px #eee}
+.player-card b,.player-card small{display:block}.player-card b{font-size:12px}.player-card small{font-size:10px;color:var(--muted);margin-top:3px}
+.player-rating{margin-left:auto;font:9px 'DM Mono',monospace;color:var(--muted)}
+.move-list-head{display:flex;justify-content:space-between;margin:26px 0 10px;font:9px 'DM Mono',monospace;letter-spacing:1px;color:#929c89}
+.move-list{height:180px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0}
+.empty-history{font-size:11px;color:#879080;text-align:center;padding:48px 0}
+.move-row{display:grid;grid-template-columns:34px 1fr 1fr;padding:7px 8px;font-size:12px}
+.move-row:nth-child(odd){background:#20261e}.move-row span{font:10px 'DM Mono',monospace;color:#829078}.move-row b{font-weight:500}
+.game-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.game-actions button{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 7px;background:#252d22;border:1px solid #3b4635;color:#e7ebdf;font:11px 'DM Sans',sans-serif;cursor:pointer}
+.game-actions button:hover:not(:disabled){border-color:var(--green);color:var(--green)}
+.game-actions button:disabled{opacity:.4;cursor:not-allowed}
+.rules-note{font:8px 'DM Mono',monospace;line-height:1.8;color:#7f8978;margin-top:18px}.rules-note span{color:var(--green)}
+.promotion-panel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:15px;padding:12px;background:#1b211a;border:1px solid var(--line);font-size:12px}
+.promotion-panel button{background:#2b3525;border:1px solid #49583d;color:#f2f4e9;padding:5px 10px;font-size:23px;cursor:pointer}
+.promotion-panel .cancel-promotion{font:11px 'DM Sans',sans-serif}
+.play-footer{border-top:1px solid var(--line);padding:20px 0;display:flex;justify-content:space-between;gap:12px;font:9px 'DM Mono',monospace;letter-spacing:1px;color:#798473}
+.nav-cta:hover,.back-link:hover{color:var(--green)}
+@media(max-width:900px){.play-shell{padding:0 5%}.play-layout{grid-template-columns:1fr;max-width:680px;margin:auto;gap:30px}.game-panel{min-height:auto}.play-footer{max-width:680px;margin:auto}}
+@media(max-width:520px){.play-kicker{display:none}.play-nav{height:70px}.play-heading{align-items:start;flex-direction:column}.play-heading h1{font-size:39px}.live-board-wrap{grid-template-columns:13px minmax(0,1fr) 13px;gap:4px}.live-board{border-width:5px}.live-square>span:not(.move-dot):not(.capture-dot){font-size:clamp(22px,9vw,43px)}.rank-label,.file-label{font-size:8px}.file-coords{margin-left:17px;margin-right:17px}.play-footer{font-size:7px;letter-spacing:.4px}}
